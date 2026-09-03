@@ -1,0 +1,96 @@
+<form [formGroup]="miFormulario" (ngSubmit)="onSubmit()">
+
+  <!-- Campo del mensaje -->
+  <label>
+    Mensaje:
+    <textarea formControlName="mensaje"></textarea>
+  </label>
+
+  <!-- Selección de modo: cifrar o descifrar -->
+  <fieldset>
+    <legend>Modo</legend>
+    <label>
+      <input type="radio" formControlName="modo" value="cifrar" />
+      Cifrar
+    </label>
+    <label>
+      <input type="radio" formControlName="modo" value="descifrar" />
+      Descifrar
+    </label>
+  </fieldset>
+
+  <!-- Tipo de conjunto de caracteres -->
+  <fieldset>
+    <legend>Conjunto de caracteres</legend>
+    <label>
+      <input type="radio" formControlName="tipoConjunto" value="predefinido" />
+      Usar un conjunto predefinido
+    </label>
+    <label>
+      <input type="radio" formControlName="tipoConjunto" value="personalizado" />
+      Definir mi propio conjunto
+    </label>
+
+    <!-- Solo se muestra si eligió "predefinido" -->
+    <div *ngIf="miFormulario.get('tipoConjunto')?.value === 'predefinido'">
+      <label>
+        Elige un conjunto:
+        <select formControlName="conjuntoPredefinido">
+          <option value="minusculas">Minúsculas sin acentos</option>
+          <option value="minusculasMayusculas">Minúsculas y mayúsculas sin acentos</option>
+          <option value="minusculasConAcentos">Minúsculas con acentos</option>
+          <option value="completo">Mayúsculas + minúsculas + acentos</option>
+        </select>
+      </label>
+    </div>
+
+    <!-- Solo se muestra si eligió "personalizado" -->
+    <div *ngIf="miFormulario.get('tipoConjunto')?.value === 'personalizado'">
+      <label>
+        Escribe tu conjunto de caracteres:
+        <input type="text" formControlName="conjuntoPersonalizado" />
+      </label>
+    </div>
+  </fieldset>
+
+  <!-- Solo se muestran método y desplazamiento si el modo es CIFRAR -->
+  <fieldset *ngIf="miFormulario.get('modo')?.value === 'cifrar'">
+    <legend>Método de cifrado</legend>
+    <label>
+      <input type="radio" formControlName="metodo" value="cesar" />
+      César
+    </label>
+    <label>
+      <input type="radio" formControlName="metodo" value="atbash" />
+      Atbash
+    </label>
+
+    <!-- El desplazamiento solo aplica si el método es César -->
+    <div *ngIf="miFormulario.get('metodo')?.value === 'cesar'">
+      <label>
+        Desplazamiento:
+        <input type="number" formControlName="desplazamiento" />
+      </label>
+    </div>
+  </fieldset>
+
+  <button type="submit">
+    {{ miFormulario.get('modo')?.value === 'cifrar' ? 'Cifrar' : 'Descifrar' }}
+  </button>
+
+</form>
+
+<!-- Resultado -->
+<div *ngIf="resultado">
+  <h3>Resultado:</h3>
+  <p>{{ resultado }}</p>
+
+   <!-- Detalle técnico de la detección automática, solo si fue un descifrado -->
+  <div *ngIf="deteccion" class="detalle-deteccion">
+    <span>Método detectado: {{ deteccion.metodo === 'cesar' ? 'César' : 'Atbash' }}</span>
+    <span *ngIf="deteccion.metodo === 'cesar'">
+      · Desplazamiento: {{ deteccion.desplazamiento }}
+    </span>
+    <span>· Score χ²: {{ deteccion.score.toFixed(2) }}</span>
+  </div>
+</div>

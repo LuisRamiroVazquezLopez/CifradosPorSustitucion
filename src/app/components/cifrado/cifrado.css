@@ -1,0 +1,175 @@
+:host {
+  --bg-principal: #0d0f14;
+  --bg-tarjeta: #151821;
+  --azul-marino: #1e3a5f;
+  --azul-acento: #3b6ea5;
+  --texto-principal: #e8eaed;
+  --texto-secundario: #9aa3b2;
+  --borde: #262b38;
+
+  display: block;
+  max-width: 640px;
+  margin: 0;
+  padding: 2.5rem;
+  background: var(--bg-tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: var(--texto-principal);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--texto-secundario);
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.02em;
+}
+
+textarea,
+input[type="text"],
+input[type="number"],
+select {
+  width: 100%;
+  background: var(--bg-principal);
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+  color: var(--texto-principal);
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+textarea:focus,
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--azul-acento);
+  box-shadow: 0 0 0 3px rgba(59, 110, 165, 0.2);
+}
+
+fieldset {
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  animation: aparecer 0.3s ease;
+}
+
+legend {
+  padding: 0 0.5rem;
+  font-size: 0.8rem;
+  color: var(--azul-acento);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Opciones tipo radio, con transición suave al pasar el cursor */
+fieldset label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-right: 1.2rem;
+  color: var(--texto-principal);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+fieldset label:hover {
+  color: var(--azul-acento);
+}
+
+input[type="radio"] {
+  accent-color: var(--azul-acento);
+  cursor: pointer;
+}
+
+button {
+  align-self: flex-start;
+  background: var(--azul-marino);
+  color: var(--texto-principal);
+  border: 1px solid var(--azul-acento);
+  border-radius: 8px;
+  padding: 0.7rem 1.8rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.15s ease;
+}
+
+button:hover {
+  background: var(--azul-acento);
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Bloques condicionales (*ngIf) que aparecen suavemente.
+   Requiere agregar class="seccion-condicional" a esos divs en el HTML. */
+.seccion-condicional {
+  animation: aparecer 0.3s ease;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Resultado.
+   Requiere agregar class="resultado" al div que envuelve el <h3>Resultado:</h3> */
+.resultado {
+  margin-top: 1rem;
+  padding: 1.2rem;
+  background: var(--bg-principal);
+  border-left: 3px solid var(--azul-acento);
+  border-radius: 6px;
+  animation: aparecer 0.35s ease;
+}
+
+.resultado h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.8rem;
+  color: var(--texto-secundario);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.resultado p {
+  margin: 0;
+  font-size: 1.05rem;
+  word-break: break-word;
+  color: var(--texto-principal);
+}
+
+.detalle-deteccion {
+  margin-top: 0.7rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--borde);
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  font-size: 0.75rem;
+  color: var(--texto-secundario);
+  letter-spacing: 0.02em;
+}

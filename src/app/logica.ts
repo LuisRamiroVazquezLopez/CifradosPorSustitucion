@@ -160,15 +160,12 @@ function detectarYDescifrar(
 }
 
 const conjuntoPrueba = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n', 'ñ','o','p','q','r','s','t','u','v','w','x','y','z']; // el que estés usando
-const textoOriginal = "Entre ayer y hoy realice la investigacion previa a la realizacion del proyecto. Casi termino la logica";
-const textoCifrado = descifradoCesar(textoOriginal, -5, conjuntoPrueba); 
+const textoOriginal = "Pero lo tengo que leer especificamente asi de frente ese seria el unico detalle";
+const textoCifrado = "oeailna ienw dwyew wzahawjpa";
 // (o usa cifradoCesar con desplazamiento 5, es lo mismo)
+console.log(textoCifrado); // para ver qué texto cifrado se generó
 
 const resultado = detectarYDescifrar(textoCifrado, conjuntoPrueba, frecuenciasEsperadasES);
 console.log(resultado);
 // esperas: metodo: 'cesar', desplazamiento: 5, textoDescifrado === textoOriginal
 
-const textoCifradoAtbash = cifrarAtbash(textoOriginal, conjuntoPrueba);
-const resultado2 = detectarYDescifrar(textoCifradoAtbash, conjuntoPrueba, frecuenciasEsperadasES);
-// esperas: metodo: 'atbash', textoDescifrado === textoOriginal
-console.log(resultado2);
