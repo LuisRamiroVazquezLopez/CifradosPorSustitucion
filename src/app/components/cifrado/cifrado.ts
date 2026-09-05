@@ -34,6 +34,7 @@ export class CifradoComponent {
     });
   }
 
+  // CLAVE-11
   private obtenerConjuntoActivo(): string[] {
     const tipoConjunto = this.miFormulario.get('tipoConjunto')?.value;
 
@@ -47,13 +48,14 @@ export class CifradoComponent {
     }
   }
 
+  // CLAVE-12
   onSubmit(): void {
     const conjunto = this.obtenerConjuntoActivo();
     const mensaje = this.miFormulario.get('mensaje')?.value;
     const modo = this.miFormulario.get('modo')?.value;
 
     if (modo === 'cifrar') {
-      this.deteccion = null; // limpia info de detección si estaba de un descifrado anterior
+      this.deteccion = null;
       const metodo = this.miFormulario.get('metodo')?.value;
 
       if (metodo === 'cesar') {
@@ -70,7 +72,7 @@ export class CifradoComponent {
         frecuenciasEsperadas,
       );
       this.resultado = deteccion.textoDescifrado;
-      this.deteccion = deteccion; 
+      this.deteccion = deteccion;
     }
   }
 }

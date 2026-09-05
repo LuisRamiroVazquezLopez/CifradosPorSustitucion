@@ -6,38 +6,6 @@ import { Injectable } from '@angular/core';
 export class Cifrado {
   constructor() {}
 
-  // Tabla de frecuencias esperadas del español, fuente: DEM - Colegio de México
-  // https://dem.colmex.mx/Frecuencia/Letras (García Camarero / DEM, uso académico con cita)
-  private frecuenciasMinusculas: Record<string, number> = {
-    a: 12.4286,
-    b: 1.339374,
-    c: 6.086271,
-    d: 3.762064,
-    e: 11.502856,
-    f: 0.906047,
-    g: 1.53634,
-    h: 0.610597,
-    i: 7.465038,
-    j: 0.53181,
-    k: 0,
-    l: 3.801458,
-    m: 3.427221,
-    n: 6.381721,
-    ñ: 0.216663,
-    o: 8.371085,
-    p: 3.407524,
-    q: 0.35454,
-    r: 12.034666,
-    s: 4.707504,
-    t: 5.554461,
-    u: 3.545401,
-    v: 1.024227,
-    w: 0,
-    x: 0.216663,
-    y: 0.29545,
-    z: 0.492417,
-  };
-
   private frecuenciasMinYMay: Record<string, number> = {
     a: 12.4286,
     b: 1.339374,
@@ -95,12 +63,14 @@ export class Cifrado {
     Z: 0.492417,
   };
 
-  private FRECUENCIA_MINIMA = 0.01; // valor simbólico para evitar división entre cero en chi-cuadrada
+  private FRECUENCIA_MINIMA = 0.01;
 
+  // CLAVE-10
   obtenerFrecuenciasEsperadas(): Record<string, number> {
     return { ...this.frecuenciasMinYMay };
   }
 
+  // CLAVE-01
   private validarConjunto(conjunto: string[]): void {
     if (conjunto.length === 0) {
       throw new Error('El conjunto no puede estar vacío.');
@@ -115,6 +85,7 @@ export class Cifrado {
     }
   }
 
+  // CLAVE-02
   private normalizarParaAnalisis(simbolo: string): string {
     const simboloMinuscula = simbolo.toLocaleLowerCase('es');
     const equivalencias: Record<string, string> = {
@@ -129,6 +100,7 @@ export class Cifrado {
     return equivalencias[simboloMinuscula] ?? simboloMinuscula;
   }
 
+  // CLAVE-03
   cifradoCesar(texto: string, desplazamiento: number, conjunto: string[]): string {
     this.validarConjunto(conjunto);
     if (!Number.isFinite(desplazamiento)) {
@@ -149,6 +121,7 @@ export class Cifrado {
       .join('');
   }
 
+  // CLAVE-04
   cifrarAtbash(texto: string, conjunto: string[]): string {
     this.validarConjunto(conjunto);
 
@@ -165,6 +138,7 @@ export class Cifrado {
       .join('');
   }
 
+  // CLAVE-05
   descifradoCesar(texto: string, desplazamiento: number, conjunto: string[]): string {
     this.validarConjunto(conjunto);
     if (!Number.isFinite(desplazamiento)) {
@@ -185,6 +159,7 @@ export class Cifrado {
       .join('');
   }
 
+  // CLAVE-06
   contarFrecuencias(texto: string): Record<string, number> {
     const frecuencias: Record<string, number> = {};
 
@@ -194,6 +169,7 @@ export class Cifrado {
     return frecuencias;
   }
 
+  // CLAVE-07
   calcularChi(observadas: number[], esperadas: number[]): number {
     if (observadas.length !== esperadas.length) {
       throw new Error('Los arreglos de observadas y esperadas deben tener la misma longitud.');
@@ -229,6 +205,7 @@ export class Cifrado {
     }, 0);
   }
 
+  // CLAVE-08
   calcularFrecuenciasParaChi(
   texto: string,
   conjunto: string[],
@@ -238,7 +215,6 @@ export class Cifrado {
 
   const conteoObservado = this.contarFrecuencias(texto);
 
-  // Solo símbolos que existen en la tabla (aunque su valor sea 0, como k/w)
   const categorias = [
     ...new Set(
       conjunto
@@ -267,7 +243,6 @@ export class Cifrado {
   }
 
   const observadas = categorias.map((categoria) => conteoNormalizado[categoria] || 0);
-  // Aquí regresa el Math.max: protege contra los valores 0 legítimos de la tabla (k, w)
   const pesos = categorias.map((categoria) =>
     Math.max(frecuenciasEsperadas[categoria], this.FRECUENCIA_MINIMA)
   );
@@ -277,6 +252,7 @@ export class Cifrado {
   return { observadas, esperadas };
 }
 
+  // CLAVE-09
   detectarYDescifrar(
     textoCifrado: string,
     conjunto: string[],
@@ -286,7 +262,6 @@ export class Cifrado {
 
     const candidatos: ResultadoDeteccion[] = [];
 
-    // 1. Candidato de Atbash
     const textoDescifradoAtbash = this.cifrarAtbash(textoCifrado, conjunto);
     const frecuenciasAtbash = this.calcularFrecuenciasParaChi(
       textoDescifradoAtbash,
@@ -301,7 +276,6 @@ export class Cifrado {
     };
     candidatos.push(candidatoAtbash);
 
-    // 2. Candidatos de César, uno por cada desplazamiento posible
     for (let k = 1; k < conjunto.length; k++) {
       const textoDescifradoCesar = this.descifradoCesar(textoCifrado, k, conjunto);
       const frecuenciasCesar = this.calcularFrecuenciasParaChi(
@@ -318,26 +292,17 @@ export class Cifrado {
       candidatos.push(candidato);
     }
 
-    // 3. De todos los candidatos, quedarte con el de menor score (chi-cuadrada más bajo)
     const mejorCandidato = candidatos.reduce((mejor, actual) => {
       return actual.score < mejor.score ? actual : mejor;
     }, candidatos[0]);
 
-    // 4. Devolver únicamente ese mejor candidato (la rúbrica pide que NO se muestren
-    //    las demás opciones al usuario — aquí es donde se cumple ese requisito)
-
-    console.log(candidatos.map(c => ({
-  metodo: c.metodo,
-  desplazamiento: c.desplazamiento,
-  score: c.score.toFixed(4)
-})).sort((a, b) => Number(a.score) - Number(b.score)));
     return mejorCandidato;
   }
 }
 
 export interface ResultadoDeteccion {
   metodo: 'cesar' | 'atbash';
-  desplazamiento: number | null; // null si es Atbash
+  desplazamiento: number | null;
   textoDescifrado: string;
-  score: number; // opcional guardarlo, útil para pruebas/debug
+  score: number;
 }
