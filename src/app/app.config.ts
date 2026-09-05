@@ -3,7 +3,7 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideBrowserGlobalErrorListeners(), provideClientHydration(withEventReplay()),
-    
+    provideBrowserGlobalErrorListeners(),
+    provideClientHydration(withEventReplay()),
   ]
 };
