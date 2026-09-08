@@ -3,11 +3,14 @@ import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Cifrado, ResultadoDeteccion } from '../../services/cifrado';
 
+// Se usa Array.from y no split('') porque split('') separa por unidades UTF-16 y
+// parte a la mitad los caracteres que ocupan dos, como los emojis. Array.from
+// separa por caracteres reales, igual que el Array.from(texto) del servicio.
 const CONJUNTOS_PREDEFINIDOS: Record<string, string[]> = {
-  minusculas: 'abcdefghijklmnñopqrstuvwxyz'.split(''),
-  minusculasMayusculas: 'abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ'.split(''),
-  minusculasConAcentos: 'abcdefghijklmnñopqrstuvwxyzáéíóúü'.split(''),
-  completo: 'abcdefghijklmnñopqrstuvwxyzáéíóúüABCDEFGHIJKLMNÑOPQRSTUVWXYZÁÉÍÓÚÜ'.split(''),
+  minusculas: Array.from('abcdefghijklmnñopqrstuvwxyz'),
+  minusculasMayusculas: Array.from('abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ'),
+  minusculasConAcentos: Array.from('abcdefghijklmnñopqrstuvwxyzáéíóúü'),
+  completo: Array.from('abcdefghijklmnñopqrstuvwxyzáéíóúüABCDEFGHIJKLMNÑOPQRSTUVWXYZÁÉÍÓÚÜ'),
 };
 
 @Component({
@@ -22,7 +25,11 @@ export class CifradoComponent {
   resultado: string = '';
   deteccion: ResultadoDeteccion | null = null;
 
+  // Debajo de esta cantidad de letras el análisis de frecuencias no es confiable.
+  letrasMinimas: number;
+
   constructor(private cifradoService: Cifrado) {
+    this.letrasMinimas = cifradoService.LETRAS_MINIMAS_CONFIABLES;
     this.miFormulario = new FormGroup({
       mensaje: new FormControl(''),
       modo: new FormControl('cifrar'),
@@ -43,7 +50,7 @@ export class CifradoComponent {
       return CONJUNTOS_PREDEFINIDOS[clave];
     } else {
       const textoPersonalizado = this.miFormulario.get('conjuntoPersonalizado')?.value as string;
-      const sinDuplicados = [...new Set(textoPersonalizado.split(''))];
+      const sinDuplicados = [...new Set(Array.from(textoPersonalizado))];
       return sinDuplicados;
     }
   }

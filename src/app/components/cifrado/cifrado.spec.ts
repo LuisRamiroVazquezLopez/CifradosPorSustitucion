@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Cifrado } from './cifrado';
+import { CifradoComponent } from './cifrado';
 
-describe('Cifrado', () => {
-  let component: Cifrado;
-  let fixture: ComponentFixture<Cifrado>;
+describe('CifradoComponent', () => {
+  let component: CifradoComponent;
+  let fixture: ComponentFixture<CifradoComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Cifrado],
+      imports: [CifradoComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Cifrado);
+    fixture = TestBed.createComponent(CifradoComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

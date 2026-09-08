@@ -85,12 +85,21 @@
   <h3>Resultado:</h3>
   <p>{{ resultado }}</p>
 
+  <!-- Aviso si el mensaje tiene muy pocas letras para el análisis de frecuencias -->
+  <p *ngIf="deteccion && deteccion.letrasAnalizadas < letrasMinimas" class="aviso-mensaje-corto">
+    ⚠️ El descifrado no es seguro porque el mensaje es muy pequeño.
+  </p>
+
    <!-- Detalle técnico de la detección automática, solo si fue un descifrado -->
   <div *ngIf="deteccion" class="detalle-deteccion">
     <span>Método detectado: {{ deteccion.metodo === 'cesar' ? 'César' : 'Atbash' }}</span>
     <span *ngIf="deteccion.metodo === 'cesar'">
       · Desplazamiento: {{ deteccion.desplazamiento }}
     </span>
-    <span>· Score χ²: {{ deteccion.score.toFixed(2) }}</span>
+    <span>· Letras analizadas: {{ deteccion.letrasAnalizadas }}</span>
+    <span>
+      · Score χ² por letra:
+      {{ deteccion.letrasAnalizadas > 0 ? deteccion.score.toFixed(3) : '—' }}
+    </span>
   </div>
 </div>

@@ -173,3 +173,13 @@ button:active {
   color: var(--texto-secundario);
   letter-spacing: 0.02em;
 }
+.aviso-mensaje-corto {
+  margin: 0.7rem 0 0 0;
+  padding: 0.6rem 0.75rem;
+  background: rgba(217, 145, 32, 0.12);
+  border: 1px solid rgba(217, 145, 32, 0.45);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: #e6b566;
+}
